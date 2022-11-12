@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+import io.swagger.models.auth.In;
 import org.apache.log4j.Logger;
 
 public class TracksManagerImpl implements TracksManager {
@@ -38,7 +39,7 @@ public class TracksManagerImpl implements TracksManager {
         }
         int x=0;
         while((!JuegoEncontrado)&&(x<listaJuegos.size())){
-            if(listaJuegos.get(x).getIDjuego()==idJuego){
+            if(Objects.equals(listaJuegos.get(x).getIDjuego(), idJuego)){
                 JuegoEncontrado=true;
             }
             else{
@@ -147,39 +148,127 @@ public class TracksManagerImpl implements TracksManager {
 
     @Override
     public List<Usuario> consultaListaUsuariosJuego(String idJuego) {
-        List<Usuario> UsuariosOrdenados=new ArrayList<Usuario>();
-        for(int i=0;i<listaUsuarios.size();i++){
-            List<Juego> ListJ=listaUsuarios.get(i).getListaJuegos();
+        boolean juegoEncontrado=false;
+        int k=0;
+        while((!juegoEncontrado)&&(k<listaJuegos.size())){
+            if(Objects.equals(listaJuegos.get(k).getIDjuego(), idJuego)){
+                juegoEncontrado=true;
+            }
+            else{
+                k++;
+            }
+        }
+        if(juegoEncontrado) {
+            List<Usuario> UsuariosOrdenados = new ArrayList<Usuario>();
+            List<Integer> listaPuntos = new ArrayList<Integer>();
+            int y = 0;
+            boolean jugadorAnadido = false;
+            while ((y < listaUsuarios.size()) && (!jugadorAnadido)) {
+                List<Juego> ListJ = listaUsuarios.get(y).getListaJuegos();
 
-            boolean JuegoEncontrado=false;
-            int x=0;
-            while((!JuegoEncontrado)&&(x<ListJ.size())){
-                if(Objects.equals(ListJ.get(x).getIDjuego(), idJuego)){
-                    JuegoEncontrado=true;
+                boolean JuegoEncontrado = false;
+                int x = 0;
+                while ((!JuegoEncontrado) && (x < ListJ.size())) {
+                    if (Objects.equals(ListJ.get(x).getIDjuego(), idJuego)) {
+                        JuegoEncontrado = true;
+                    } else {
+                        x++;
+                    }
                 }
-                else{
-                    x++;
+                if (JuegoEncontrado) {
+                    UsuariosOrdenados.add(listaUsuarios.get(y));
+                    List<Partida> ListP = ListJ.get(x).getListaPartidas();
+                    int puntos = ListP.get(ListP.size() - 1).getPuntos();
+                    listaPuntos.add(puntos);
+                    jugadorAnadido = true;
+                } else {
+                    y++;
                 }
             }
-            List<Partida> ListP=ListJ.get(x).getListaPartidas();
-            int puntos=ListP.get(ListP.size()-1).getPuntos();
+            for (int i = y + 1; i < listaUsuarios.size(); i++) {
+                List<Juego> ListJ = listaUsuarios.get(i).getListaJuegos();
 
-            boolean superior=false;
-            int y=0;
+                boolean JuegoEncontrado = false;
+                int x = 0;
+                while ((!JuegoEncontrado) && (x < ListJ.size())) {
+                    if (Objects.equals(ListJ.get(x).getIDjuego(), idJuego)) {
+                        JuegoEncontrado = true;
+                    } else {
+                        x++;
+                    }
+                }
+                List<Partida> ListP = ListJ.get(x).getListaPartidas();
+                int puntos = ListP.get(ListP.size() - 1).getPuntos();
 
-
+                boolean inferior = false;
+                boolean puesto = false;
+                int z = 0;
+                while ((!inferior) && (z < listaPuntos.size())) {
+                    if (listaPuntos.get(z) > puntos) {
+                        listaPuntos.add(z, puntos);
+                        UsuariosOrdenados.add(z, listaUsuarios.get(y));
+                        inferior = true;
+                        puesto = true;
+                    } else {
+                        y++;
+                    }
+                }
+                if (!puesto) {
+                    listaPuntos.add(z, puntos);
+                    UsuariosOrdenados.add(z, listaUsuarios.get(y));
+                }
+            }
+            return UsuariosOrdenados;
         }
-        return null;
+        else{
+            return null;
+        }
 
     }
 
     @Override
     public List<Juego> consultaJuegosUsuario(String idUsuario) {
+        boolean UsuarioEncontrado=false;
+        int i=0;
+        while((!UsuarioEncontrado)&&(i<listaUsuarios.size())){
+            if(Objects.equals(listaUsuarios.get(i).getIdUsuario(), idUsuario)){
+                UsuarioEncontrado=true;
+            }
+            else{
+                i++;
+            }
+        }
+        if(UsuarioEncontrado){
+            return listaUsuarios.get(i).getListaJuegos();
+        }
         return null;
     }
 
     @Override
     public List<Partida> consultaActividadJuego(String idUsuario, String idJuego) {
+        boolean UsuarioEncontrado=false;
+        int i=0;
+        while((!UsuarioEncontrado)&&(i<listaUsuarios.size())){
+            if(Objects.equals(listaUsuarios.get(i).getIdUsuario(), idUsuario)){
+                UsuarioEncontrado=true;
+            }
+            else{
+                i++;
+            }
+        }
+        if(UsuarioEncontrado){
+
+            int y=0;
+            while(y<listaUsuarios.get(i).getListaJuegos().size()){
+                if(Objects.equals(listaUsuarios.get(i).getListaJuegos().get(y).getIDjuego(), idJuego)){
+
+                    return listaUsuarios.get(i).getListaJuegos().get(y).getListaPartidas();
+                }
+                else{
+                    y++;
+                }
+            }
+        }
         return null;
     }
 }
