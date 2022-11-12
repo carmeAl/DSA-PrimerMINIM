@@ -2,9 +2,13 @@ package edu.upc.dsa;
 
 import edu.upc.dsa.models.Track;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface TracksManager {
+    public ArrayList<Usuario> getListaUsuarios();
+    public ArrayList<Juego> getListaJuegos();
+    public void addUsuario(String idUsuario);
     public void crearJuego(String idJuego,String descrpcion,int numNiveles);
     public void iniciarPartida(String idUsuario, String idJuego) throws Exception;
     public int consultaNivelActual(String idUsuario) throws Exception;

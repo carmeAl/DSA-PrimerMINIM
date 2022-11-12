@@ -18,6 +18,25 @@ public class TracksManagerImpl implements TracksManager {
         listaUsuarios=new ArrayList<Usuario>();
         listaJuegos=new ArrayList<Juego>();
     }
+
+    public ArrayList<Usuario> getListaUsuarios() {
+        return listaUsuarios;
+    }
+
+
+
+    public ArrayList<Juego> getListaJuegos() {
+        return listaJuegos;
+    }
+
+
+
+    @Override
+    public void addUsuario(String idUsuario) {
+        Usuario usuario=new Usuario(idUsuario);
+        listaUsuarios.add(usuario);
+    }
+
     @Override
     public void crearJuego(String idJuego, String descrpcion, int numNiveles) {
         Juego juego=new Juego(idJuego,descrpcion,numNiveles);
