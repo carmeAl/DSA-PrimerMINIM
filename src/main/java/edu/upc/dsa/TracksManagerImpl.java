@@ -1,14 +1,10 @@
 package edu.upc.dsa;
 
-import edu.upc.dsa.models.Track;
+import io.swagger.models.auth.In;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-
-import io.swagger.models.auth.In;
-import org.apache.log4j.Logger;
 
 public class TracksManagerImpl implements TracksManager {
     private ArrayList<Usuario> listaUsuarios;
@@ -38,13 +34,17 @@ public class TracksManagerImpl implements TracksManager {
     }
 
     @Override
-    public void crearJuego(String idJuego, String descrpcion, int numNiveles) {
-        Juego juego=new Juego(idJuego,descrpcion,numNiveles);
+    public void crearJuego(String idJuego, String descripcion, int numNiveles) {
+        Juego juego=new Juego(idJuego, descripcion,numNiveles);
         listaJuegos.add(juego);
     }
 
     @Override
-    public void iniciarPartida(String idUsuario, String idJuego) throws Exception {
+    public Integer iniciarPartida(String idUsuario, String idJuego) throws Exception {
+        //si se inicia la partida retorna 0
+        //si no existe el usuario retorna -1
+        //si no existe el juego retorna -2
+        //si usuario esta en una partida retorna -3
         boolean UsuarioEncontrado=false;
         boolean JuegoEncontrado=false;
         int i=0;
@@ -65,7 +65,7 @@ public class TracksManagerImpl implements TracksManager {
                 x++;
             }
         }
-        if((UsuarioEncontrado)&&(JuegoEncontrado)){
+        if((UsuarioEncontrado)&&(JuegoEncontrado)&&(!listaUsuarios.get(i).jugando)){
             Usuario usuario=listaUsuarios.get(i);
             usuario.setJugando(true);
             usuario.setIdJuegoActual(idJuego);
@@ -73,14 +73,25 @@ public class TracksManagerImpl implements TracksManager {
             usuario.setNivelActual(1);
             usuario.addListaJuegos(listaJuegos.get(x));
             listaUsuarios.set(i,usuario);
+            return 0;
+        } else if (!UsuarioEncontrado) {
+            return -1;
         }
-//falta error
+        else if(!JuegoEncontrado){
+            return -2;
+        }
+        else{
+            return -3;
+        }
+
 
     }
 
     @Override
-    public int consultaNivelActual(String idUsuario) throws Exception { //si no encuentra usuario o usuario no esta en ninguna partida
-        //retorna 0
+    public int consultaNivelActual(String idUsuario) throws Exception {
+        //retorna el nivel actual del usuario en la partida
+        //si usuario no existe retorna -1
+        //si usuario no tiene partida en curso retorna -2
             boolean UsuarioEncontrado=false;
             int i=0;
             while((!UsuarioEncontrado)&&(i<listaUsuarios.size())){
@@ -93,14 +104,23 @@ public class TracksManagerImpl implements TracksManager {
             }
             if((UsuarioEncontrado)&& listaUsuarios.get(i).isJugando()) {
                 return listaUsuarios.get(i).getNivelActual();
+            } else if (!UsuarioEncontrado) {
+                return -1;
             }
             else{
-                return 0;
+                return -2;
             }
     }
 
     @Override
-    public void pasarNivel(String idUsuario, int puntosConseguidos, String fecha) {
+    public Integer pasarNivel(String idUsuario, int puntosConseguidos, String fecha) {
+        //si pasa de nivel correctamente retorna 0
+        //Si esta en el ultimo nivel retorna 1
+        //Si usuario no existe retorna -1
+        //Si usuario no tiene partida activa retorna -2
+        //Si no se encuentra el juego retorna -3
+
+        //Miramos si el usuario existe
         boolean UsuarioEncontrado=false;
         int i=0;
         while((!UsuarioEncontrado)&&(i<listaUsuarios.size())){
@@ -132,21 +152,38 @@ public class TracksManagerImpl implements TracksManager {
                     Partida partida=new Partida(idJuegoActual,nivel,puntos+100,fecha);
                     usuario.listaJuegos.get(x).addListaPartidas(partida);
                     usuario.setJugando(false);
+                    usuario.setPuntosActuales(puntos);
+                    listaUsuarios.set(i,usuario);
+                    return 1;
                 }
                 else{
                     Partida partida=new Partida(idJuegoActual,nivel,puntos,fecha);
                     usuario.listaJuegos.get(x).addListaPartidas(partida);
                     usuario.setNivelActual(nivel+1);
+                    usuario.setPuntosActuales(puntos);
+                    listaUsuarios.set(i,usuario);
+                    return 0;
                 }
-                listaUsuarios.set(i,usuario);
+
 
             }
+            else{
+                return -3;
+            }
         }
-
+        else if (!UsuarioEncontrado) {
+            return -1;
+        }
+        else{
+            return -2;
+        }
     }
 
     @Override
-    public void finalizarPartida(String idUsuario) {
+    public Integer finalizarPartida(String idUsuario) {
+        //Si se finaliza correctamente return 0
+        //Si usuario no existe retorna -1
+        //Si usuario no tiene partida activa retorna -2
         boolean UsuarioEncontrado=false;
         int i=0;
         while((!UsuarioEncontrado)&&(i<listaUsuarios.size())){
@@ -161,7 +198,16 @@ public class TracksManagerImpl implements TracksManager {
             Usuario usuario=listaUsuarios.get(i);
             usuario.setJugando(false);
             listaUsuarios.set(i,usuario);
+            return 0;
         }
+        else if (!UsuarioEncontrado) {
+            return -1;
+        }
+        else {
+            return -2;
+        }
+
+
 
     }
 
