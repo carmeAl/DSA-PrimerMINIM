@@ -120,6 +120,8 @@ public class TracksManagerTest {
         Assert.assertEquals(400,this.tm.getListaUsuarios().get(0).getListaJuegos().get(0).getListaPartidas().get(this.tm.getListaUsuarios().get(0).getListaJuegos().get(0).getListaPartidas().size()-1).getPuntos());
         Assert.assertEquals(false,this.tm.getListaUsuarios().get(0).jugando);
 
+
+
         //El usuario no existe y retorna -1
         i=this.tm.pasarNivel("idUsuario3",50,"13/11/2022");
         Assert.assertEquals(-1,i);
