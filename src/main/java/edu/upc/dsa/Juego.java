@@ -9,7 +9,7 @@ public class Juego {
     int numNiveles;
     List<Partida> listaPartidas;
     public Juego(String IDjuego,String descripcionJuego,int numNiveles){
-        listaPartidas=new ArrayList<Partida>();
+        listaPartidas= new ArrayList<>();
         this.IDjuego=IDjuego;
         this.descripcionJuego=descripcionJuego;
         this.numNiveles=numNiveles;

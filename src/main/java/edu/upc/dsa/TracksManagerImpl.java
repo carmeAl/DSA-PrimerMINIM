@@ -11,8 +11,8 @@ public class TracksManagerImpl implements TracksManager {
     private ArrayList<Juego> listaJuegos;
 
     public TracksManagerImpl(){
-        listaUsuarios=new ArrayList<Usuario>();
-        listaJuegos=new ArrayList<Juego>();
+        listaUsuarios=new ArrayList<>();
+        listaJuegos=new ArrayList<>();
     }
 
     public ArrayList<Usuario> getListaUsuarios() {
@@ -40,7 +40,7 @@ public class TracksManagerImpl implements TracksManager {
     }
 
     @Override
-    public Integer iniciarPartida(String idUsuario, String idJuego) throws Exception {
+    public Integer iniciarPartida(String idUsuario, String idJuego) {
         //si se inicia la partida retorna 0
         //si no existe el usuario retorna -1
         //si no existe el juego retorna -2
@@ -71,7 +71,8 @@ public class TracksManagerImpl implements TracksManager {
             usuario.setIdJuegoActual(idJuego);
             usuario.setPuntosActuales(50);
             usuario.setNivelActual(1);
-            usuario.addListaJuegos(listaJuegos.get(x));
+            Juego juegoNuevo=new Juego(idJuego,listaJuegos.get(x).getDescripcionJuego(),listaJuegos.get(x).numNiveles);
+            usuario.addListaJuegos(juegoNuevo);
             listaUsuarios.set(i,usuario);
             return 0;
         } else if (!UsuarioEncontrado) {
@@ -88,7 +89,7 @@ public class TracksManagerImpl implements TracksManager {
     }
 
     @Override
-    public int consultaNivelActual(String idUsuario) throws Exception {
+    public int consultaNivelActual(String idUsuario) {
         //retorna el nivel actual del usuario en la partida
         //si usuario no existe retorna -1
         //si usuario no tiene partida en curso retorna -2
@@ -158,7 +159,7 @@ public class TracksManagerImpl implements TracksManager {
                 }
                 else{
                     Partida partida=new Partida(idJuegoActual,nivel,puntos,fecha);
-                    usuario.listaJuegos.get(x).addListaPartidas(partida);
+                    listaUsuarios.get(i).listaJuegos.get(x).addListaPartidas(partida);
                     usuario.setNivelActual(nivel+1);
                     usuario.setPuntosActuales(puntos);
                     listaUsuarios.set(i,usuario);
@@ -224,8 +225,8 @@ public class TracksManagerImpl implements TracksManager {
             }
         }
         if(juegoEncontrado) {
-            List<Usuario> UsuariosOrdenados = new ArrayList<Usuario>();
-            List<Integer> listaPuntos = new ArrayList<Integer>();
+            List<Usuario> UsuariosOrdenados = new ArrayList<>();
+            List<Integer> listaPuntos = new ArrayList<>();
             int y = 0;
             boolean jugadorAnadido = false;
             while ((y < listaUsuarios.size()) && (!jugadorAnadido)) {
