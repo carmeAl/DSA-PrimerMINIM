@@ -1,16 +1,17 @@
 package edu.upc.dsa;
 
-import io.swagger.models.auth.In;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class TracksManagerImpl implements TracksManager {
+public class JuegoVirtualImpl implements JuegoVirtual {
+    private static JuegoVirtual instance;
     private ArrayList<Usuario> listaUsuarios;
     private ArrayList<Juego> listaJuegos;
 
-    public TracksManagerImpl(){
+
+
+    public JuegoVirtualImpl(){
         listaUsuarios=new ArrayList<>();
         listaJuegos=new ArrayList<>();
     }

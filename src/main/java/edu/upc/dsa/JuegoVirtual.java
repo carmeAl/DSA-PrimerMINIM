@@ -3,7 +3,7 @@ package edu.upc.dsa;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface TracksManager {
+public interface JuegoVirtual {
     public ArrayList<Usuario> getListaUsuarios();
     public ArrayList<Juego> getListaJuegos();
     public void addUsuario(String idUsuario);
