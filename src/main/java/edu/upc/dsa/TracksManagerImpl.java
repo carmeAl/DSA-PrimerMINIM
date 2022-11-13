@@ -275,7 +275,7 @@ public class TracksManagerImpl implements TracksManager {
                         inferior = true;
                         puesto = true;
                     } else {
-                        y++;
+                        z++;
                     }
                 }
                 if (!puesto) {

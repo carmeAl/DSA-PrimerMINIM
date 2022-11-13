@@ -10,6 +10,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 
 public class TracksManagerTest {
@@ -25,6 +28,7 @@ public class TracksManagerTest {
 
         tm.addUsuario("idUsuario1");
         tm.addUsuario("idUsuario2");
+
     }
 
     @After
@@ -122,6 +126,60 @@ public class TracksManagerTest {
         //El usuario está inactivo y retorna -2
         i=this.tm.pasarNivel("idUsuario2",50,"13/11/2022");
         Assert.assertEquals(-2,i);
+    }
+
+    @Test
+    public void testFinalizarPartida() throws Exception {
+        this.tm.iniciarPartida("idUsuario1","idJuego1");
+        Assert.assertEquals(true,this.tm.getListaUsuarios().get(0).jugando);
+
+        //Miramos si ha finalizado la partida
+        //Return 0
+        //Estado del jugador inactivo
+        int i=this.tm.finalizarPartida("idUsuario1");
+        Assert.assertEquals(0,i);
+        Assert.assertEquals(false,this.tm.getListaUsuarios().get(0).jugando);
+
+        //Usuario no existre, return -1
+        i=this.tm.finalizarPartida("idUsuario3");
+        Assert.assertEquals(-1,i);
+
+        //Usuario no esta activo, retrun -2
+        i=this.tm.finalizarPartida("idUsuario2");
+        Assert.assertEquals(-2,i);
+    }
+
+    @Test
+    public void testConsultaListaUsuariosJuego() throws Exception {
+        //Hacemos que los dos usuarios juegues a los dos juegos creados en el before
+        //para poder analizar si funciona bien la lista
+        this.tm.iniciarPartida("idUsuario1","idJuego1");
+        this.tm.iniciarPartida("idUsuario2","idJuego1");
+
+        //Pasamos de nivel y finalizamos partida del usuario 1
+        this.tm.pasarNivel("idUsuario1",50,"13/11/2022");
+        this.tm.pasarNivel("idUsuario1",60,"14/11/2022");
+        this.tm.finalizarPartida("idUsuario1");
+        //Pasamos de nivel hasta que ya no hay mas niveles
+        this.tm.pasarNivel("idUsuario2",70,"13/11/2022");
+        this.tm.pasarNivel("idUsuario2",80,"14/11/2022");
+        this.tm.pasarNivel("idUsuario2",60,"14/11/2022");
+        this.tm.pasarNivel("idUsuario2",50,"14/11/2022");
+        this.tm.pasarNivel("idUsuario2",40,"14/11/2022");
+
+        this.tm.iniciarPartida("idUsuario1","idJuego2");
+        this.tm.iniciarPartida("idUsuario2","idJuego2");
+
+        this.tm.pasarNivel("idUsuario1",500,"15/11/2022");
+        this.tm.finalizarPartida("idUsuario1");
+        this.tm.finalizarPartida("idUsuario2");
+
+        List<Usuario> listUsuariosJuegoDescendente=this.tm.consultaListaUsuariosJuego("idJuego1");
+        Assert.assertEquals(2,listUsuariosJuegoDescendente.size());
+        Assert.assertEquals("idUsuario2",listUsuariosJuegoDescendente.get(0).getIdUsuario());
+        Assert.assertEquals("idUsuario1",listUsuariosJuegoDescendente.get(1).getIdUsuario());
+
+
     }
 
 
