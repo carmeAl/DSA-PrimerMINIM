@@ -23,7 +23,7 @@ public class JuegoVirtualService {
 
     private JuegoVirtual tm;
     public JuegoVirtualService(){
-        this.tm= new JuegoVirtualImpl();
+        this.tm = JuegoVirtualImpl.getInstance();
         if(tm.getListaJuegos().size()==0){
             this.tm.crearJuego("idJuego1", "Este es el primer juego creado y tiene 5 nieles", 5);
             this.tm.crearJuego("idJuego2", "Este es el segundo juego creado y tiene 3 nieles", 3);

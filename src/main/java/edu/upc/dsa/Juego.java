@@ -14,6 +14,7 @@ public class Juego {
         this.descripcionJuego=descripcionJuego;
         this.numNiveles=numNiveles;
     }
+    public Juego(){};
 
     public String getIDjuego() {
         return IDjuego;

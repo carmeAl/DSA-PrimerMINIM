@@ -15,6 +15,10 @@ public class JuegoVirtualImpl implements JuegoVirtual {
         listaUsuarios=new ArrayList<>();
         listaJuegos=new ArrayList<>();
     }
+    public static JuegoVirtual getInstance() {
+        if (instance==null) instance = new JuegoVirtualImpl();
+        return instance;
+    }
 
     public ArrayList<Usuario> getListaUsuarios() {
         return listaUsuarios;

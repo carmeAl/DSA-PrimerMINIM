@@ -12,6 +12,9 @@ public class Partida {
         this.puntos=puntos;
         this.fecha=fecha;
     }
+    public Partida(){
+
+    }
 
     public String getIdJuego() {
         return idJuego;
